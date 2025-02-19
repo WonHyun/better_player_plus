@@ -4,6 +4,7 @@
 
 // Dart imports:
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 import 'package:better_player_plus/src/configuration/better_player_buffering_configuration.dart';
 import 'package:better_player_plus/src/video_player/video_player_platform_interface.dart';
@@ -254,10 +255,13 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
           break;
         case VideoEventType.unknown:
           break;
+        case VideoEventType.error:
+          break;
       }
     }
 
     void errorListener(Object object) {
+      log('BetterPlayer: receive error $object');
       if (object is PlatformException) {
         final PlatformException e = object;
         value = value.copyWith(errorDescription: e.message);
@@ -268,11 +272,10 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
       if (!_initializingCompleter.isCompleted) {
         _initializingCompleter.completeError(object);
       }
+      videoEventStreamController.add(VideoEvent(eventType: VideoEventType.error, key: null));
     }
 
-    _eventSubscription = _videoPlayerPlatform
-        .videoEventsFor(_textureId)
-        .listen(eventListener, onError: errorListener);
+    _eventSubscription = _videoPlayerPlatform.videoEventsFor(_textureId).listen(eventListener, onError: errorListener);
   }
 
   /// Set data source for playing a video from an asset.
