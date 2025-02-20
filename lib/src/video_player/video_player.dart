@@ -262,17 +262,20 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
 
     void errorListener(Object object) {
       log('BetterPlayer: receive error $object');
+      if (_isDisposed) {
+        return;
+      }
+      videoEventStreamController.add(VideoEvent(eventType: VideoEventType.error, key: null));
       if (object is PlatformException) {
         final PlatformException e = object;
         value = value.copyWith(errorDescription: e.message);
       } else {
-        value.copyWith(errorDescription: object.toString());
+        value = value.copyWith(errorDescription: object.toString());
       }
       _timer?.cancel();
       if (!_initializingCompleter.isCompleted) {
         _initializingCompleter.completeError(object);
       }
-      videoEventStreamController.add(VideoEvent(eventType: VideoEventType.error, key: null));
     }
 
     _eventSubscription = _videoPlayerPlatform.videoEventsFor(_textureId).listen(eventListener, onError: errorListener);
