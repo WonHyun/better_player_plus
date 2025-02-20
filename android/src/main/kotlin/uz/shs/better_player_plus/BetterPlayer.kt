@@ -51,6 +51,7 @@ import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.LoadControl
+import androidx.media3.exoplayer.audio.DefaultAudioSink
 import androidx.media3.exoplayer.dash.DashMediaSource
 import androidx.media3.exoplayer.dash.DefaultDashChunkSource
 import androidx.media3.exoplayer.drm.DefaultDrmSessionManager
@@ -506,6 +507,7 @@ internal class BetterPlayer(
 
             override fun onPlayerError(error: PlaybackException) {
                 eventSink.error("VideoError", "Video player had error $error", "")
+                Log.e("BetterPlayer", "Video player had error $error")
             }
         })
         val reply: MutableMap<String, Any> = HashMap()
@@ -571,6 +573,8 @@ internal class BetterPlayer(
         if (width == 0 && height == 0 && bitrate == 0) {
             parametersBuilder.clearVideoSizeConstraints()
             parametersBuilder.setMaxVideoBitrate(Int.MAX_VALUE)
+            parametersBuilder.setForceHighestSupportedBitrate(true)
+            parametersBuilder.setMinVideoSize(1920, 1080)
         }
         trackSelector.setParameters(parametersBuilder)
     }
