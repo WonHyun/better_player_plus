@@ -1164,6 +1164,11 @@ class BetterPlayerController {
       case VideoEventType.bufferingEnd:
         _postEvent(BetterPlayerEvent(BetterPlayerEventType.bufferingEnd));
         break;
+      case VideoEventType.error:
+        _postEvent(BetterPlayerEvent(BetterPlayerEventType.exception, parameters: {
+          'errorMsg': _videoPlayerValueOnError?.errorDescription,
+        }));
+        break;
       default:
 
         ///TODO: Handle when needed

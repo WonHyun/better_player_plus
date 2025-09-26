@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import 'dart:async';
+import 'dart:developer';
 import 'package:better_player_plus/src/configuration/better_player_buffering_configuration.dart';
 import 'package:better_player_plus/src/core/better_player_utils.dart';
 import 'package:flutter/foundation.dart';
@@ -410,6 +411,7 @@ class MethodChannelVideoPlayer extends VideoPlayerPlatform {
           );
 
         default:
+          log('BetterPlayer: receive some unknown event: type -> $eventType , key -> $key');
           return VideoEvent(
             eventType: VideoEventType.unknown,
             key: key,
